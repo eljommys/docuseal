@@ -13,10 +13,10 @@
       :template-id="template.id"
       :accept-file-types="acceptFileTypes"
       :with-replace-and-clone="withReplaceAndCloneUpload"
-      @add="[updateFromUpload($event), isDragFile = false]"
-      @replace="[onDocumentsReplace($event), isDragFile = false]"
+      @add="[updateFromUpload($event), (isDragFile = false)]"
+      @replace="[onDocumentsReplace($event), (isDragFile = false)]"
       @replace-and-clone="onDocumentsReplaceAndTemplateClone($event)"
-      @error="[onUploadFailed($event), isDragFile = false]"
+      @error="[onUploadFailed($event), (isDragFile = false)]"
     />
     <DragPlaceholder
       ref="dragPlaceholder"
@@ -30,22 +30,19 @@
       class="top-1.5 sticky h-0 z-20 max-w-2xl mx-auto"
     >
       <div class="alert border-base-content/30 py-2 px-2.5">
-        <IconInfoCircle
-          class="stroke-info shrink-0 w-6 h-6"
-        />
-        <span>{{ t('uploaded_pdf_contains_form_fields_keep_or_remove_them') }}</span>
+        <IconInfoCircle class="stroke-info shrink-0 w-6 h-6" />
+        <span>{{
+          t("uploaded_pdf_contains_form_fields_keep_or_remove_them")
+        }}</span>
         <div>
-          <button
-            class="btn btn-sm"
-            @click.prevent="removePendingFields"
-          >
-            {{ t('remove') }}
+          <button class="btn btn-sm" @click.prevent="removePendingFields">
+            {{ t("remove") }}
           </button>
           <button
             class="btn btn-sm btn-neutral text-white"
             @click.prevent="save"
           >
-            {{ t('keep') }}
+            {{ t("keep") }}
           </button>
         </div>
       </div>
@@ -58,12 +55,6 @@
       :style="{ backgroundColor }"
     >
       <div class="flex items-center space-x-3">
-        <a
-          v-if="withLogo"
-          href="/"
-        >
-          <Logo />
-        </a>
         <Contenteditable
           v-if="withTitle"
           :model-value="template.name"
@@ -74,26 +65,24 @@
         />
       </div>
       <div class="space-x-3 flex items-center flex-shrink-0">
-        <slot
-          v-if="$slots.buttons"
-          name="buttons"
-        />
+        <slot v-if="$slots.buttons" name="buttons" />
         <template v-else>
           <a
             v-if="withSignYourselfButton"
             id="sign_yourself_button"
-            :href="template.submitters.length > 1 ? `/templates/${template.id}/submissions/new?selfsign=true` : `/d/${template.slug}`"
+            :href="
+              template.submitters.length > 1
+                ? `/templates/${template.id}/submissions/new?selfsign=true`
+                : `/d/${template.slug}`
+            "
             class="btn btn-primary btn-ghost text-base hidden md:flex"
             :target="template.submitters.length > 1 ? '' : '_blank'"
             :data-turbo-frame="template.submitters.length > 1 ? 'modal' : ''"
             @click="maybeShowErrorTemplateAlert"
           >
-            <IconWritingSign
-              width="22"
-              class="inline"
-            />
+            <IconWritingSign width="22" class="inline" />
             <span class="hidden md:inline">
-              {{ t('sign_yourself') }}
+              {{ t("sign_yourself") }}
             </span>
           </a>
           <a
@@ -104,19 +93,12 @@
             class="white-button md:!px-6"
             @click="maybeShowErrorTemplateAlert"
           >
-            <IconUsersPlus
-              width="20"
-              class="inline"
-            />
+            <IconUsersPlus width="20" class="inline" />
             <span class="hidden md:inline">
-              {{ t('send') }}
+              {{ t("send") }}
             </span>
           </a>
-          <span
-            v-if="editable"
-            id="save_button_container"
-            class="flex"
-          >
+          <span v-if="editable" id="save_button_container" class="flex">
             <button
               class="base-button !rounded-r-none !pr-2"
               :class="{ disabled: isSaving }"
@@ -128,12 +110,9 @@
                 width="22"
                 class="animate-spin"
               />
-              <IconDeviceFloppy
-                v-else
-                width="22"
-              />
+              <IconDeviceFloppy v-else width="22" />
               <span class="hidden md:inline">
-                {{ t('save') }}
+                {{ t("save") }}
               </span>
             </button>
             <div class="dropdown dropdown-end">
@@ -156,7 +135,9 @@
                     class="flex items-center justify-center space-x-2"
                   >
                     <IconEye class="w-6 h-6 flex-shrink-0" />
-                    <span class="whitespace-nowrap">{{ t('save_and_preview') }}</span>
+                    <span class="whitespace-nowrap">{{
+                      t("save_and_preview")
+                    }}</span>
                   </a>
                 </li>
                 <li>
@@ -167,19 +148,17 @@
                     @click="closeDropdown"
                   >
                     <IconAdjustments class="w-6 h-6 flex-shrink-0" />
-                    <span class="whitespace-nowrap">{{ t('preferences') }}</span>
+                    <span class="whitespace-nowrap">{{
+                      t("preferences")
+                    }}</span>
                   </a>
                 </li>
               </ul>
             </div>
           </span>
-          <a
-            v-else
-            :href="`/templates/${template.id}`"
-            class="base-button"
-          >
+          <a v-else :href="`/templates/${template.id}`" class="base-button">
             <span class="hidden md:inline">
-              {{ t('back') }}
+              {{ t("back") }}
             </span>
           </a>
         </template>
@@ -188,13 +167,21 @@
     <div
       id="main_container"
       class="flex main-container"
-      :class="$slots.buttons || withTitle ? (isMobile ? 'max-h-[calc(100%_-_60px)]' : 'md:max-h-[calc(100%_-_60px)]') : (isMobile ? 'max-h-[100%]' : 'md:max-h-[100%]')"
+      :class="
+        $slots.buttons || withTitle
+          ? isMobile
+            ? 'max-h-[calc(100%_-_60px)]'
+            : 'md:max-h-[calc(100%_-_60px)]'
+          : isMobile
+          ? 'max-h-[100%]'
+          : 'md:max-h-[100%]'
+      "
     >
       <div
         v-if="withDocumentsList"
         id="documents_container"
         ref="previews"
-        :style="{ 'display': isBreakpointLg ? 'none' : 'initial' }"
+        :style="{ display: isBreakpointLg ? 'none' : 'initial' }"
         class="overflow-y-auto overflow-x-hidden w-52 flex-none pr-3 mt-0.5 pt-0.5 hidden lg:block"
       >
         <DocumentPreview
@@ -236,24 +223,24 @@
               v-if="isLoadingBlankPage"
               class="animate-spin w-5 h-5"
             />
-            <IconPlus
-              v-else
-              class="w-5 h-5"
-            />
-            {{ t('add_blank_page') }}
+            <IconPlus v-else class="w-5 h-5" />
+            {{ t("add_blank_page") }}
           </button>
         </div>
       </div>
       <div
         id="pages_container"
         class="w-full overflow-x-hidden mt-0.5 pt-0.5"
-        :class="isMobile ? 'overflow-y-auto' : 'overflow-y-hidden md:overflow-y-auto'"
+        :class="
+          isMobile ? 'overflow-y-auto' : 'overflow-y-hidden md:overflow-y-auto'
+        "
       >
-        <div
-          ref="documents"
-          class="pr-3.5 pl-0.5"
-        >
-          <template v-if="!sortedDocuments.length && (withUploadButton || withAddPageButton)">
+        <div ref="documents" class="pr-3.5 pl-0.5">
+          <template
+            v-if="
+              !sortedDocuments.length && (withUploadButton || withAddPageButton)
+            "
+          >
             <Dropzone
               v-if="withUploadButton"
               :template-id="template.id"
@@ -270,18 +257,12 @@
                 v-if="isLoadingBlankPage"
                 class="animate-spin w-5 h-5"
               />
-              <IconPlus
-                v-else
-                class="w-5 h-5"
-              />
-              {{ t('add_blank_page') }}
+              <IconPlus v-else class="w-5 h-5" />
+              {{ t("add_blank_page") }}
             </button>
           </template>
           <template v-else>
-            <template
-              v-for="document in sortedDocuments"
-              :key="document.uuid"
-            >
+            <template v-for="document in sortedDocuments" :key="document.uuid">
               <Document
                 :ref="setDocumentRefs"
                 :areas-index="fieldAreasIndex[document.uuid]"
@@ -299,14 +280,24 @@
                 :draw-field-type="drawFieldType"
                 :editable="editable"
                 :base-url="baseUrl"
-                @draw="[onDraw($event), withSelectedFieldType ? '' : drawFieldType = '', showDrawField = false]"
+                @draw="
+                  [
+                    onDraw($event),
+                    withSelectedFieldType ? '' : (drawFieldType = ''),
+                    (showDrawField = false),
+                  ]
+                "
                 @drop-field="onDropfield"
                 @remove-area="removeArea"
               />
               <DocumentControls
                 v-if="isBreakpointLg && editable"
                 :with-arrows="template.schema.length > 1"
-                :item="template.schema.find((item) => item.attachment_uuid === document.uuid)"
+                :item="
+                  template.schema.find(
+                    (item) => item.attachment_uuid === document.uuid
+                  )
+                "
                 :with-replace-button="withUploadButton"
                 :accept-file-types="acceptFileTypes"
                 :document="document"
@@ -314,8 +305,22 @@
                 class="pb-2 mb-2 border-b border-base-300 border-dashed"
                 @remove="onDocumentRemove"
                 @replace="onDocumentReplace"
-                @up="moveDocument(template.schema.find((item) => item.attachment_uuid === document.uuid), -1)"
-                @down="moveDocument(template.schema.find((item) => item.attachment_uuid === document.uuid), 1)"
+                @up="
+                  moveDocument(
+                    template.schema.find(
+                      (item) => item.attachment_uuid === document.uuid
+                    ),
+                    -1
+                  )
+                "
+                @down="
+                  moveDocument(
+                    template.schema.find(
+                      (item) => item.attachment_uuid === document.uuid
+                    ),
+                    1
+                  )
+                "
                 @change="save"
               />
             </template>
@@ -339,11 +344,8 @@
                   v-if="isLoadingBlankPage"
                   class="animate-spin w-5 h-5"
                 />
-                <IconPlus
-                  v-else
-                  class="w-5 h-5"
-                />
-                {{ t('add_blank_page') }}
+                <IconPlus v-else class="w-5 h-5" />
+                {{ t("add_blank_page") }}
               </button>
             </div>
           </template>
@@ -353,31 +355,49 @@
         v-if="withFieldsList && !isMobile"
         id="fields_list_container"
         class="relative w-80 flex-none mt-1 pr-4 pl-0.5 hidden md:block fields-list-container"
-        :class="drawField ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'"
+        :class="
+          drawField ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'
+        "
       >
         <div
           v-if="showDrawField || drawField"
           class="sticky inset-0 h-full z-20"
           :style="{ backgroundColor }"
         >
-          <div class="bg-base-200 rounded-lg p-5 text-center space-y-4 draw-field-container">
+          <div
+            class="bg-base-200 rounded-lg p-5 text-center space-y-4 draw-field-container"
+          >
             <p>
-              {{ t('draw_field_on_the_document') }}
+              {{ t("draw_field_on_the_document") }}
             </p>
             <div>
               <button
                 class="base-button cancel-draw-button"
                 @click="clearDrawField"
               >
-                {{ t('cancel') }}
+                {{ t("cancel") }}
               </button>
               <a
-                v-if="!drawField && !drawOption && !['stamp', 'signature', 'initials', 'heading'].includes(drawField?.type || drawFieldType)"
+                v-if="
+                  !drawField &&
+                  !drawOption &&
+                  !['stamp', 'signature', 'initials', 'heading'].includes(
+                    drawField?.type || drawFieldType
+                  )
+                "
                 href="#"
                 class="link block mt-3 text-sm"
-                @click.prevent="[addField(drawFieldType), drawField = null, drawOption = null, withSelectedFieldType ? '' : drawFieldType = '', showDrawField = false]"
+                @click.prevent="
+                  [
+                    addField(drawFieldType),
+                    (drawField = null),
+                    (drawOption = null),
+                    withSelectedFieldType ? '' : (drawFieldType = ''),
+                    (showDrawField = false),
+                  ]
+                "
               >
-                {{ t('or_add_field_without_drawing') }}
+                {{ t("or_add_field_without_drawing") }}
               </a>
             </div>
           </div>
@@ -401,12 +421,21 @@
             :editable="editable"
             :show-tour-start-form="showTourStartForm"
             @add-field="addField"
-            @set-draw="[drawField = $event.field, drawOption = $event.option]"
-            @set-draw-type="[drawFieldType = $event, showDrawField = true]"
+            @set-draw="
+              [(drawField = $event.field), (drawOption = $event.option)]
+            "
+            @set-draw-type="[(drawFieldType = $event), (showDrawField = true)]"
             @set-drag="dragField = $event"
-            @set-drag-placeholder="$refs.dragPlaceholder.dragPlaceholder = $event"
+            @set-drag-placeholder="
+              $refs.dragPlaceholder.dragPlaceholder = $event
+            "
             @change-submitter="selectedSubmitter = $event"
-            @drag-end="[dragField = null, $refs.dragPlaceholder.dragPlaceholder = null]"
+            @drag-end="
+              [
+                (dragField = null),
+                ($refs.dragPlaceholder.dragPlaceholder = null),
+              ]
+            "
             @scroll-to-area="scrollToArea"
           />
         </div>
@@ -421,8 +450,13 @@
         :selected-submitter="selectedSubmitter"
         :class="{ 'md:hidden': !isMobile }"
         :editable="editable"
-        @cancel="[drawField = null, drawOption = null]"
-        @change-submitter="[selectedSubmitter = $event, drawField.submitter_uuid = $event.uuid]"
+        @cancel="[(drawField = null), (drawOption = null)]"
+        @change-submitter="
+          [
+            (selectedSubmitter = $event),
+            (drawField.submitter_uuid = $event.uuid),
+          ]
+        "
       />
       <MobileFields
         v-if="sortedDocuments.length && !drawField && editable"
@@ -435,34 +469,41 @@
         @select="startFieldDraw($event)"
       />
     </div>
-    <div
-      id="docuseal_modal_container"
-      class="modal-container"
-    />
+    <div id="docuseal_modal_container" class="modal-container" />
   </div>
 </template>
 
 <script>
-import Upload from './upload'
-import Dropzone from './dropzone'
-import HoverDropzone from './hover_dropzone'
-import DragPlaceholder from './drag_placeholder'
-import Fields from './fields'
-import MobileDrawField from './mobile_draw_field'
-import Document from './document'
-import Logo from './logo'
-import Contenteditable from './contenteditable'
-import DocumentPreview from './preview'
-import DocumentControls from './controls'
-import MobileFields from './mobile_fields'
-import FieldSubmitter from './field_submitter'
-import { IconPlus, IconUsersPlus, IconDeviceFloppy, IconChevronDown, IconEye, IconWritingSign, IconInnerShadowTop, IconInfoCircle, IconAdjustments } from '@tabler/icons-vue'
-import { v4 } from 'uuid'
-import { ref, computed, toRaw } from 'vue'
-import * as i18n from './i18n'
+import Upload from "./upload";
+import Dropzone from "./dropzone";
+import HoverDropzone from "./hover_dropzone";
+import DragPlaceholder from "./drag_placeholder";
+import Fields from "./fields";
+import MobileDrawField from "./mobile_draw_field";
+import Document from "./document";
+import Logo from "./logo";
+import Contenteditable from "./contenteditable";
+import DocumentPreview from "./preview";
+import DocumentControls from "./controls";
+import MobileFields from "./mobile_fields";
+import FieldSubmitter from "./field_submitter";
+import {
+  IconPlus,
+  IconUsersPlus,
+  IconDeviceFloppy,
+  IconChevronDown,
+  IconEye,
+  IconWritingSign,
+  IconInnerShadowTop,
+  IconInfoCircle,
+  IconAdjustments,
+} from "@tabler/icons-vue";
+import { v4 } from "uuid";
+import { ref, computed, toRaw } from "vue";
+import * as i18n from "./i18n";
 
 export default {
-  name: 'TemplateBuilder',
+  name: "TemplateBuilder",
   components: {
     Upload,
     DragPlaceholder,
@@ -484,9 +525,9 @@ export default {
     IconChevronDown,
     IconAdjustments,
     IconEye,
-    IconDeviceFloppy
+    IconDeviceFloppy,
   },
-  provide () {
+  provide() {
     return {
       template: this.template,
       save: this.save,
@@ -505,232 +546,232 @@ export default {
       withConditions: this.withConditions,
       defaultDrawFieldType: this.defaultDrawFieldType,
       selectedAreaRef: computed(() => this.selectedAreaRef),
-      fieldsDragFieldRef: computed(() => this.fieldsDragFieldRef)
-    }
+      fieldsDragFieldRef: computed(() => this.fieldsDragFieldRef),
+    };
   },
   props: {
     template: {
       type: Object,
-      required: true
+      required: true,
     },
     i18n: {
       type: Object,
       required: false,
-      default: () => ({})
+      default: () => ({}),
     },
     withFieldPlaceholder: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     backgroundColor: {
       type: String,
       required: false,
-      default: ''
+      default: "",
     },
     locale: {
       type: String,
       required: false,
-      default: ''
+      default: "",
     },
     editable: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     withSendButton: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     withSignYourselfButton: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     inputMode: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     withHelp: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     withAddPageButton: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     autosave: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     defaultFields: {
       type: Array,
       required: false,
-      default: () => []
+      default: () => [],
     },
     defaultRequiredFields: {
       type: Array,
       required: false,
-      default: () => []
+      default: () => [],
     },
     withSelectedFieldType: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     defaultDrawFieldType: {
       type: String,
       required: false,
-      default: 'text'
+      default: "text",
     },
     currencies: {
       type: Array,
       required: false,
-      default: () => []
+      default: () => [],
     },
     fieldTypes: {
       type: Array,
       required: false,
-      default: () => []
+      default: () => [],
     },
     defaultSubmitters: {
       type: Array,
       required: false,
-      default: () => []
+      default: () => [],
     },
     defineSubmitters: {
       type: Array,
       required: false,
-      default: () => []
+      default: () => [],
     },
     acceptFileTypes: {
       type: String,
       required: false,
-      default: 'image/*, application/pdf'
+      default: "image/*, application/pdf",
     },
     baseUrl: {
       type: String,
       required: false,
-      default: ''
+      default: "",
     },
     withLogo: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     onUpload: {
       type: Function,
       required: false,
-      default () {
-        return () => {}
-      }
+      default() {
+        return () => {};
+      },
     },
     onSave: {
       type: Function,
       required: false,
-      default () {
-        return () => {}
-      }
+      default() {
+        return () => {};
+      },
     },
     onChange: {
       type: Function,
       required: false,
-      default () {
-        return () => {}
-      }
+      default() {
+        return () => {};
+      },
     },
     withStickySubmitters: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     withUploadButton: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     withTitle: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     withFieldsSearch: {
       type: Boolean,
       required: false,
-      default: null
+      default: null,
     },
     withFieldsList: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     authenticityToken: {
       type: String,
       required: false,
-      default: ''
+      default: "",
     },
     withDocumentsList: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     withReplaceAndCloneUpload: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     withPhone: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     withVerification: {
       type: Boolean,
       required: false,
-      default: null
+      default: null,
     },
     withPayment: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     isPaymentConnected: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     withFormula: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     withConditions: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     onlyDefinedFields: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     fetchOptions: {
       type: Object,
       required: false,
-      default: () => ({ headers: {} })
+      default: () => ({ headers: {} }),
     },
     showTourStartForm: {
       type: Boolean,
       required: false,
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
+  data() {
     return {
       documentRefs: [],
       isBreakpointLg: false,
@@ -744,479 +785,579 @@ export default {
       drawFieldType: null,
       drawOption: null,
       dragField: null,
-      isDragFile: false
-    }
+      isDragFile: false,
+    };
   },
   computed: {
     submitterDefaultNames: FieldSubmitter.computed.names,
     selectedAreaRef: () => ref(),
     fieldsDragFieldRef: () => ref(),
-    language () {
-      return this.locale.split('-')[0].toLowerCase()
+    language() {
+      return this.locale.split("-")[0].toLowerCase();
     },
-    isMobile () {
-      const isMobileSafariIos = 'ontouchstart' in window && navigator.maxTouchPoints > 0 && /AppleWebKit/i.test(navigator.userAgent)
+    isMobile() {
+      const isMobileSafariIos =
+        "ontouchstart" in window &&
+        navigator.maxTouchPoints > 0 &&
+        /AppleWebKit/i.test(navigator.userAgent);
 
-      return isMobileSafariIos || /android|iphone|ipad/i.test(navigator.userAgent)
+      return (
+        isMobileSafariIos || /android|iphone|ipad/i.test(navigator.userAgent)
+      );
     },
-    defaultDateFormat () {
-      const isUsBrowser = Intl.DateTimeFormat().resolvedOptions().locale.endsWith('-US')
-      const isUsTimezone = new Intl.DateTimeFormat('en-US', { timeZoneName: 'short' }).format(new Date()).match(/\s(?:CST|CDT|PST|PDT|EST|EDT)$/)
+    defaultDateFormat() {
+      const isUsBrowser = Intl.DateTimeFormat()
+        .resolvedOptions()
+        .locale.endsWith("-US");
+      const isUsTimezone = new Intl.DateTimeFormat("en-US", {
+        timeZoneName: "short",
+      })
+        .format(new Date())
+        .match(/\s(?:CST|CDT|PST|PDT|EST|EDT)$/);
 
-      return this.localeDateFormats[this.locale] || ((isUsBrowser || isUsTimezone) ? 'MM/DD/YYYY' : 'DD/MM/YYYY')
+      return (
+        this.localeDateFormats[this.locale] ||
+        (isUsBrowser || isUsTimezone ? "MM/DD/YYYY" : "DD/MM/YYYY")
+      );
     },
-    localeDateFormats () {
+    localeDateFormats() {
       return {
-        'de-DE': 'DD.MM.YYYY',
-        'fr-FR': 'DD/MM/YYYY',
-        'it-IT': 'DD/MM/YYYY',
-        'en-GB': 'DD/MM/YYYY',
-        'es-ES': 'DD/MM/YYYY'
-      }
+        "de-DE": "DD.MM.YYYY",
+        "fr-FR": "DD/MM/YYYY",
+        "it-IT": "DD/MM/YYYY",
+        "en-GB": "DD/MM/YYYY",
+        "es-ES": "DD/MM/YYYY",
+      };
     },
-    fieldAreasIndex () {
-      const areas = {}
+    fieldAreasIndex() {
+      const areas = {};
 
       this.template.fields.forEach((f) => {
         (f.areas || []).forEach((a) => {
-          areas[a.attachment_uuid] ||= {}
+          areas[a.attachment_uuid] ||= {};
 
-          const acc = (areas[a.attachment_uuid][a.page] ||= [])
+          const acc = (areas[a.attachment_uuid][a.page] ||= []);
 
-          acc.push({ area: a, field: f })
-        })
-      })
+          acc.push({ area: a, field: f });
+        });
+      });
 
-      return areas
+      return areas;
     },
-    isAllRequiredFieldsAdded () {
+    isAllRequiredFieldsAdded() {
       return !this.defaultRequiredFields?.some((f) => {
-        return !this.template.fields?.some((field) => field.name === f.name)
-      })
+        return !this.template.fields?.some((field) => field.name === f.name);
+      });
     },
-    selectedField () {
-      return this.template.fields.find((f) => f.areas?.includes(this.selectedAreaRef.value))
+    selectedField() {
+      return this.template.fields.find((f) =>
+        f.areas?.includes(this.selectedAreaRef.value)
+      );
     },
-    sortedDocuments () {
+    sortedDocuments() {
       return this.template.schema.map((item) => {
-        return this.template.documents.find(doc => doc.uuid === item.attachment_uuid)
-      })
-    }
+        return this.template.documents.find(
+          (doc) => doc.uuid === item.attachment_uuid
+        );
+      });
+    },
   },
-  created () {
-    if (!this.template.fields?.length && this.template.submitters?.length === 1) {
-      if (this.template.submitters[0]?.name === 'First Party') {
-        this.template.submitters[0].name = this.t('first_party')
+  created() {
+    if (
+      !this.template.fields?.length &&
+      this.template.submitters?.length === 1
+    ) {
+      if (this.template.submitters[0]?.name === "First Party") {
+        this.template.submitters[0].name = this.t("first_party");
       }
     }
 
     const existingSubmittersUuids = this.defaultSubmitters.map((name) => {
-      return this.template.submitters.find(e => e.name === name)?.uuid
-    })
+      return this.template.submitters.find((e) => e.name === name)?.uuid;
+    });
 
     this.defaultSubmitters.forEach((name, index) => {
-      const submitter = (this.template.submitters[index] ||= {})
+      const submitter = (this.template.submitters[index] ||= {});
 
-      submitter.name = name
+      submitter.name = name;
 
       if (existingSubmittersUuids.filter(Boolean).length) {
-        submitter.uuid = existingSubmittersUuids[index] || submitter.uuid || v4()
+        submitter.uuid =
+          existingSubmittersUuids[index] || submitter.uuid || v4();
       } else {
-        submitter.uuid ||= v4()
+        submitter.uuid ||= v4();
       }
-    })
+    });
 
     const defineSubmittersUuids = this.defineSubmitters.map((name) => {
-      return this.template.submitters.find(e => e.name === name)?.uuid
-    })
+      return this.template.submitters.find((e) => e.name === name)?.uuid;
+    });
 
     this.defineSubmitters.forEach((name, index) => {
-      const submitter = (this.template.submitters[index] ||= {})
+      const submitter = (this.template.submitters[index] ||= {});
 
-      submitter.name = name || this.submitterDefaultNames[index]
+      submitter.name = name || this.submitterDefaultNames[index];
 
-      if (defineSubmittersUuids.filter(Boolean).length || existingSubmittersUuids.filter(Boolean).length) {
-        submitter.uuid = defineSubmittersUuids[index] || existingSubmittersUuids[index] || submitter.uuid || v4()
+      if (
+        defineSubmittersUuids.filter(Boolean).length ||
+        existingSubmittersUuids.filter(Boolean).length
+      ) {
+        submitter.uuid =
+          defineSubmittersUuids[index] ||
+          existingSubmittersUuids[index] ||
+          submitter.uuid ||
+          v4();
       } else {
-        submitter.uuid ||= v4()
+        submitter.uuid ||= v4();
       }
-    })
+    });
 
-    this.selectedSubmitter = this.template.submitters[0]
+    this.selectedSubmitter = this.template.submitters[0];
   },
-  mounted () {
-    this.undoStack = [JSON.stringify(this.template)]
-    this.redoStack = []
+  mounted() {
+    this.undoStack = [JSON.stringify(this.template)];
+    this.redoStack = [];
 
     this.$nextTick(() => {
-      this.onWindowResize()
-    })
+      this.onWindowResize();
+    });
 
-    document.addEventListener('keyup', this.onKeyUp)
-    window.addEventListener('keydown', this.onKeyDown)
+    document.addEventListener("keyup", this.onKeyUp);
+    window.addEventListener("keydown", this.onKeyDown);
 
-    window.addEventListener('resize', this.onWindowResize)
-    window.addEventListener('dragleave', this.onWindowDragLeave)
+    window.addEventListener("resize", this.onWindowResize);
+    window.addEventListener("dragleave", this.onWindowDragLeave);
 
     this.$nextTick(() => {
-      if (document.location.search?.includes('stripe_connect_success')) {
-        document.querySelector('form[action="/auth/stripe_connect"]')?.closest('.dropdown')?.querySelector('label')?.focus()
+      if (document.location.search?.includes("stripe_connect_success")) {
+        document
+          .querySelector('form[action="/auth/stripe_connect"]')
+          ?.closest(".dropdown")
+          ?.querySelector("label")
+          ?.focus();
       }
-    })
+    });
 
     this.template.schema.forEach((item) => {
       if (item.pending_fields) {
-        this.pendingFieldAttachmentUuids.push(item.attachment_uuid)
+        this.pendingFieldAttachmentUuids.push(item.attachment_uuid);
       }
-    })
+    });
   },
-  unmounted () {
-    document.removeEventListener('keyup', this.onKeyUp)
-    window.removeEventListener('keydown', this.onKeyDown)
+  unmounted() {
+    document.removeEventListener("keyup", this.onKeyUp);
+    window.removeEventListener("keydown", this.onKeyDown);
 
-    window.removeEventListener('resize', this.onWindowResize)
-    window.removeEventListener('dragleave', this.onWindowDragLeave)
+    window.removeEventListener("resize", this.onWindowResize);
+    window.removeEventListener("dragleave", this.onWindowDragLeave);
   },
-  beforeUpdate () {
-    this.documentRefs = []
+  beforeUpdate() {
+    this.documentRefs = [];
   },
   methods: {
     toRaw,
-    onDragover (e) {
+    onDragover(e) {
       if (this.$refs.dragPlaceholder?.dragPlaceholder) {
-        this.$refs.dragPlaceholder.isMask = e.target.id === 'mask'
+        this.$refs.dragPlaceholder.isMask = e.target.id === "mask";
 
-        const ref = this.$refs.dragPlaceholder.dragPlaceholder
+        const ref = this.$refs.dragPlaceholder.dragPlaceholder;
 
-        ref.x = e.clientX - ref.offsetX
-        ref.y = e.clientY - ref.offsetY
-      } else if (e.dataTransfer?.types?.includes('Files')) {
-        this.isDragFile = true
+        ref.x = e.clientX - ref.offsetX;
+        ref.y = e.clientY - ref.offsetY;
+      } else if (e.dataTransfer?.types?.includes("Files")) {
+        this.isDragFile = true;
       }
     },
-    onWindowDragLeave (event) {
-      if (event.clientX <= 0 || event.clientY <= 0 || event.clientX >= window.innerWidth || event.clientY >= window.innerHeight) {
-        this.isDragFile = false
+    onWindowDragLeave(event) {
+      if (
+        event.clientX <= 0 ||
+        event.clientY <= 0 ||
+        event.clientX >= window.innerWidth ||
+        event.clientY >= window.innerHeight
+      ) {
+        this.isDragFile = false;
       }
     },
-    reorderFields (item) {
-      const itemFields = []
-      const fields = []
-      const fieldAreasIndex = {}
+    reorderFields(item) {
+      const itemFields = [];
+      const fields = [];
+      const fieldAreasIndex = {};
 
-      const attachmentUuids = this.template.schema.map((e) => e.attachment_uuid)
+      const attachmentUuids = this.template.schema.map(
+        (e) => e.attachment_uuid
+      );
 
       this.template.fields.forEach((f) => {
         if (f.areas?.length) {
           const firstArea = f.areas.reduce((min, a) => {
-            return attachmentUuids.indexOf(a.attachment_uuid) < attachmentUuids.indexOf(min.attachment_uuid) ? a : min
-          }, f.areas[0])
+            return attachmentUuids.indexOf(a.attachment_uuid) <
+              attachmentUuids.indexOf(min.attachment_uuid)
+              ? a
+              : min;
+          }, f.areas[0]);
 
           if (firstArea.attachment_uuid === item.attachment_uuid) {
-            itemFields.push(f)
+            itemFields.push(f);
           } else {
-            fields.push(f)
+            fields.push(f);
           }
         } else {
-          fields.push(f)
+          fields.push(f);
         }
-      })
+      });
 
       const sortArea = (aArea, bArea) => {
         if (aArea.attachment_uuid === bArea.attachment_uuid) {
           if (aArea.page === bArea.page) {
             if (Math.abs(aArea.y - bArea.y) < 0.01) {
               if (aArea.x === bArea.x) {
-                return 0
+                return 0;
               } else {
-                return aArea.x - bArea.x
+                return aArea.x - bArea.x;
               }
             } else {
-              return aArea.y - bArea.y
+              return aArea.y - bArea.y;
             }
           } else {
-            return aArea.page - bArea.page
+            return aArea.page - bArea.page;
           }
         } else {
-          return attachmentUuids.indexOf(aArea.attachment_uuid) - attachmentUuids.indexOf(bArea.attachment_uuid)
+          return (
+            attachmentUuids.indexOf(aArea.attachment_uuid) -
+            attachmentUuids.indexOf(bArea.attachment_uuid)
+          );
         }
-      }
+      };
 
       itemFields.sort((aField, bField) => {
-        const aArea = (fieldAreasIndex[aField.uuid] ||= [...(aField.areas || [])].sort(sortArea)[0])
-        const bArea = (fieldAreasIndex[bField.uuid] ||= [...(bField.areas || [])].sort(sortArea)[0])
+        const aArea = (fieldAreasIndex[aField.uuid] ||= [
+          ...(aField.areas || []),
+        ].sort(sortArea)[0]);
+        const bArea = (fieldAreasIndex[bField.uuid] ||= [
+          ...(bField.areas || []),
+        ].sort(sortArea)[0]);
 
-        return sortArea(aArea, bArea)
-      })
+        return sortArea(aArea, bArea);
+      });
 
-      const insertBeforeAttachmentUuids = attachmentUuids.slice(this.template.schema.indexOf(item) + 1)
+      const insertBeforeAttachmentUuids = attachmentUuids.slice(
+        this.template.schema.indexOf(item) + 1
+      );
 
-      let sortedFields = []
+      let sortedFields = [];
 
       if (insertBeforeAttachmentUuids.length) {
         const insertAfterField = fields.find((f) => {
           if (f.areas?.length) {
-            return f.areas.find((a) => insertBeforeAttachmentUuids.includes(a.attachment_uuid))
+            return f.areas.find((a) =>
+              insertBeforeAttachmentUuids.includes(a.attachment_uuid)
+            );
           } else {
-            return false
+            return false;
           }
-        })
+        });
 
         if (insertAfterField) {
-          fields.splice(fields.indexOf(insertAfterField), 0, ...itemFields)
+          fields.splice(fields.indexOf(insertAfterField), 0, ...itemFields);
 
-          sortedFields = fields
+          sortedFields = fields;
         } else {
-          sortedFields = fields.concat(itemFields)
+          sortedFields = fields.concat(itemFields);
         }
       } else {
-        if (fields.length && itemFields.length && this.template.fields.indexOf(fields[0]) > this.template.fields.indexOf(itemFields[0])) {
-          sortedFields = itemFields.concat(fields)
+        if (
+          fields.length &&
+          itemFields.length &&
+          this.template.fields.indexOf(fields[0]) >
+            this.template.fields.indexOf(itemFields[0])
+        ) {
+          sortedFields = itemFields.concat(fields);
         } else {
-          sortedFields = fields.concat(itemFields)
+          sortedFields = fields.concat(itemFields);
         }
       }
 
       if (this.template.fields.length === sortedFields.length) {
-        this.template.fields = sortedFields
-        this.save()
+        this.template.fields = sortedFields;
+        this.save();
       }
     },
-    closeDropdown () {
-      document.activeElement.blur()
+    closeDropdown() {
+      document.activeElement.blur();
     },
-    t (key) {
-      return this.i18n[key] || i18n[this.language]?.[key] || i18n.en[key] || key
+    t(key) {
+      return (
+        this.i18n[key] || i18n[this.language]?.[key] || i18n.en[key] || key
+      );
     },
-    removePendingFields () {
+    removePendingFields() {
       this.template.fields = this.template.fields.filter((f) => {
-        return this.template.schema.find((item) => item.attachment_uuid === f.attachment_uuid && item.pending_fields)
-      })
+        return this.template.schema.find(
+          (item) =>
+            item.attachment_uuid === f.attachment_uuid && item.pending_fields
+        );
+      });
 
-      this.save()
+      this.save();
     },
-    addField (type, area = null) {
+    addField(type, area = null) {
       const field = {
-        name: '',
+        name: "",
         uuid: v4(),
-        required: type !== 'checkbox',
+        required: type !== "checkbox",
         areas: area ? [area] : [],
         submitter_uuid: this.selectedSubmitter.uuid,
-        type
+        type,
+      };
+
+      if (["select", "multiple", "radio"].includes(type)) {
+        field.options = [{ value: "", uuid: v4() }];
       }
 
-      if (['select', 'multiple', 'radio'].includes(type)) {
-        field.options = [{ value: '', uuid: v4() }]
+      if (type === "stamp") {
+        field.readonly = true;
       }
 
-      if (type === 'stamp') {
-        field.readonly = true
-      }
-
-      if (type === 'date') {
+      if (type === "date") {
         field.preferences = {
-          format: this.defaultDateFormat
-        }
+          format: this.defaultDateFormat,
+        };
       }
 
-      this.template.fields.push(field)
+      this.template.fields.push(field);
 
-      this.save()
+      this.save();
     },
-    startFieldDraw ({ name, type }) {
-      const existingField = this.template.fields?.find((f) => f.submitter_uuid === this.selectedSubmitter.uuid && name && name === f.name)
+    startFieldDraw({ name, type }) {
+      const existingField = this.template.fields?.find(
+        (f) =>
+          f.submitter_uuid === this.selectedSubmitter.uuid &&
+          name &&
+          name === f.name
+      );
 
       if (existingField) {
-        this.drawField = existingField
+        this.drawField = existingField;
       } else {
         const field = {
-          name: name || '',
+          name: name || "",
           uuid: v4(),
-          required: type !== 'checkbox',
+          required: type !== "checkbox",
           areas: [],
           submitter_uuid: this.selectedSubmitter.uuid,
-          type
+          type,
+        };
+
+        if (["select", "multiple", "radio"].includes(type)) {
+          field.options = [{ value: "", uuid: v4() }];
         }
 
-        if (['select', 'multiple', 'radio'].includes(type)) {
-          field.options = [{ value: '', uuid: v4() }]
+        if (type === "stamp") {
+          field.readonly = true;
         }
 
-        if (type === 'stamp') {
-          field.readonly = true
-        }
-
-        if (type === 'date') {
+        if (type === "date") {
           field.preferences = {
-            format: this.defaultDateFormat
-          }
+            format: this.defaultDateFormat,
+          };
         }
 
-        this.drawField = field
+        this.drawField = field;
       }
 
-      this.drawOption = null
+      this.drawOption = null;
     },
-    undo () {
+    undo() {
       if (this.undoStack.length > 1) {
-        this.undoStack.pop()
-        const stringData = this.undoStack[this.undoStack.length - 1]
-        const currentStringData = JSON.stringify(this.template)
+        this.undoStack.pop();
+        const stringData = this.undoStack[this.undoStack.length - 1];
+        const currentStringData = JSON.stringify(this.template);
 
         if (stringData && stringData !== currentStringData) {
-          this.redoStack.push(currentStringData)
+          this.redoStack.push(currentStringData);
 
-          Object.assign(this.template, JSON.parse(stringData))
+          Object.assign(this.template, JSON.parse(stringData));
 
-          this.save()
+          this.save();
         }
       }
     },
-    redo () {
-      const stringData = this.redoStack.pop()
-      this.lastRedoData = stringData
-      const currentStringData = JSON.stringify(this.template)
+    redo() {
+      const stringData = this.redoStack.pop();
+      this.lastRedoData = stringData;
+      const currentStringData = JSON.stringify(this.template);
 
       if (stringData && stringData !== currentStringData) {
         if (this.undoStack[this.undoStack.length - 1] !== currentStringData) {
-          this.undoStack.push(currentStringData)
+          this.undoStack.push(currentStringData);
         }
 
-        Object.assign(this.template, JSON.parse(stringData))
+        Object.assign(this.template, JSON.parse(stringData));
 
-        this.save()
+        this.save();
       }
     },
-    onWindowResize (e) {
-      const breakpointLg = 1024
+    onWindowResize(e) {
+      const breakpointLg = 1024;
 
-      this.isBreakpointLg = this.$el.getRootNode().querySelector('div[data-v-app]').offsetWidth < breakpointLg
+      this.isBreakpointLg =
+        this.$el.getRootNode().querySelector("div[data-v-app]").offsetWidth <
+        breakpointLg;
     },
-    setDocumentRefs (el) {
+    setDocumentRefs(el) {
       if (el) {
-        this.documentRefs.push(el)
+        this.documentRefs.push(el);
       }
     },
-    scrollIntoDocument (item) {
-      const ref = this.documentRefs.find((e) => e.document.uuid === item.attachment_uuid)
+    scrollIntoDocument(item) {
+      const ref = this.documentRefs.find(
+        (e) => e.document.uuid === item.attachment_uuid
+      );
 
-      ref.$el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      ref.$el.scrollIntoView({ behavior: "smooth", block: "start" });
     },
-    clearDrawField () {
-      this.drawField = null
-      this.drawOption = null
-      this.showDrawField = false
+    clearDrawField() {
+      this.drawField = null;
+      this.drawOption = null;
+      this.showDrawField = false;
 
       if (!this.withSelectedFieldType) {
-        this.drawFieldType = ''
+        this.drawFieldType = "";
       }
     },
-    onKeyUp (e) {
-      if (e.code === 'Escape') {
-        this.clearDrawField()
+    onKeyUp(e) {
+      if (e.code === "Escape") {
+        this.clearDrawField();
 
-        this.selectedAreaRef.value = null
+        this.selectedAreaRef.value = null;
       }
 
-      if (this.editable && ['Backspace', 'Delete'].includes(e.key) && this.selectedAreaRef.value && document.activeElement === document.body) {
-        this.removeArea(this.selectedAreaRef.value)
+      if (
+        this.editable &&
+        ["Backspace", "Delete"].includes(e.key) &&
+        this.selectedAreaRef.value &&
+        document.activeElement === document.body
+      ) {
+        this.removeArea(this.selectedAreaRef.value);
 
-        this.selectedAreaRef.value = null
-      }
-    },
-    onKeyDown (event) {
-      if ((event.metaKey && event.shiftKey && event.key === 'z') || (event.ctrlKey && event.key === 'Z')) {
-        event.stopImmediatePropagation()
-        event.preventDefault()
-
-        this.redo()
-      } else if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
-        event.stopImmediatePropagation()
-        event.preventDefault()
-
-        this.undo()
-      } else if ((event.ctrlKey || event.metaKey) && event.key === 'c' && document.activeElement === document.body) {
-        event.preventDefault()
-
-        this.copiedArea = this.selectedAreaRef?.value
-      } else if ((event.ctrlKey || event.metaKey) && event.key === 'v' && this.copiedArea && document.activeElement === document.body) {
-        event.preventDefault()
-
-        this.pasteField()
-      } else if (this.selectedAreaRef.value && ['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown'].includes(event.key) && document.activeElement === document.body) {
-        event.preventDefault()
-
-        this.handleAreaArrows(event)
+        this.selectedAreaRef.value = null;
       }
     },
-    handleAreaArrows (event) {
+    onKeyDown(event) {
+      if (
+        (event.metaKey && event.shiftKey && event.key === "z") ||
+        (event.ctrlKey && event.key === "Z")
+      ) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        this.redo();
+      } else if ((event.ctrlKey || event.metaKey) && event.key === "z") {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        this.undo();
+      } else if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key === "c" &&
+        document.activeElement === document.body
+      ) {
+        event.preventDefault();
+
+        this.copiedArea = this.selectedAreaRef?.value;
+      } else if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key === "v" &&
+        this.copiedArea &&
+        document.activeElement === document.body
+      ) {
+        event.preventDefault();
+
+        this.pasteField();
+      } else if (
+        this.selectedAreaRef.value &&
+        ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(
+          event.key
+        ) &&
+        document.activeElement === document.body
+      ) {
+        event.preventDefault();
+
+        this.handleAreaArrows(event);
+      }
+    },
+    handleAreaArrows(event) {
       if (!this.editable) {
-        return
+        return;
       }
 
-      const area = this.selectedAreaRef.value
-      const documentRef = this.documentRefs.find((e) => e.document.uuid === area.attachment_uuid)
-      const page = documentRef.pageRefs[area.page].$refs.image
-      const rect = page.getBoundingClientRect()
-      const diff = (event.shiftKey ? 5.0 : 1.0)
+      const area = this.selectedAreaRef.value;
+      const documentRef = this.documentRefs.find(
+        (e) => e.document.uuid === area.attachment_uuid
+      );
+      const page = documentRef.pageRefs[area.page].$refs.image;
+      const rect = page.getBoundingClientRect();
+      const diff = event.shiftKey ? 5.0 : 1.0;
 
-      if (event.key === 'ArrowRight' && event.altKey) {
-        area.w = Math.min(Math.max(area.w + diff / rect.width, 0), 1 - area.x)
-      } else if (event.key === 'ArrowLeft' && event.altKey) {
-        area.w = Math.min(Math.max(area.w - diff / rect.width, 0), 1 - area.x)
-      } else if (event.key === 'ArrowUp' && event.altKey) {
-        area.h = Math.min(Math.max(area.h - diff / rect.height, 0), 1 - area.y)
-      } else if (event.key === 'ArrowDown' && event.altKey) {
-        area.h = Math.min(Math.max(area.h + diff / rect.height, 0), 1 - area.y)
-      } else if (event.key === 'ArrowRight') {
-        area.x = Math.min(Math.max(area.x + diff / rect.width, 0), 1 - area.w)
-      } else if (event.key === 'ArrowLeft') {
-        area.x = Math.min(Math.max(area.x - diff / rect.width, 0), 1 - area.w)
-      } else if (event.key === 'ArrowUp') {
-        area.y = Math.min(Math.max(area.y - diff / rect.height, 0), 1 - area.h)
-      } else if (event.key === 'ArrowDown') {
-        area.y = Math.min(Math.max(area.y + diff / rect.height, 0), 1 - area.h)
+      if (event.key === "ArrowRight" && event.altKey) {
+        area.w = Math.min(Math.max(area.w + diff / rect.width, 0), 1 - area.x);
+      } else if (event.key === "ArrowLeft" && event.altKey) {
+        area.w = Math.min(Math.max(area.w - diff / rect.width, 0), 1 - area.x);
+      } else if (event.key === "ArrowUp" && event.altKey) {
+        area.h = Math.min(Math.max(area.h - diff / rect.height, 0), 1 - area.y);
+      } else if (event.key === "ArrowDown" && event.altKey) {
+        area.h = Math.min(Math.max(area.h + diff / rect.height, 0), 1 - area.y);
+      } else if (event.key === "ArrowRight") {
+        area.x = Math.min(Math.max(area.x + diff / rect.width, 0), 1 - area.w);
+      } else if (event.key === "ArrowLeft") {
+        area.x = Math.min(Math.max(area.x - diff / rect.width, 0), 1 - area.w);
+      } else if (event.key === "ArrowUp") {
+        area.y = Math.min(Math.max(area.y - diff / rect.height, 0), 1 - area.h);
+      } else if (event.key === "ArrowDown") {
+        area.y = Math.min(Math.max(area.y + diff / rect.height, 0), 1 - area.h);
       }
 
-      this.debouncedSave()
+      this.debouncedSave();
     },
-    debouncedSave () {
-      clearTimeout(this._saveTimeout)
+    debouncedSave() {
+      clearTimeout(this._saveTimeout);
 
       this._saveTimeout = setTimeout(() => {
-        this.save()
-      }, 700)
+        this.save();
+      }, 700);
     },
-    removeArea (area) {
-      const field = this.template.fields.find((f) => f.areas?.includes(area))
+    removeArea(area) {
+      const field = this.template.fields.find((f) => f.areas?.includes(area));
 
-      field.areas.splice(field.areas.indexOf(area), 1)
+      field.areas.splice(field.areas.indexOf(area), 1);
 
       if (!field.areas.length) {
-        this.template.fields.splice(this.template.fields.indexOf(field), 1)
+        this.template.fields.splice(this.template.fields.indexOf(field), 1);
 
         this.template.fields.forEach((f) => {
           (f.conditions || []).forEach((c) => {
             if (c.field_uuid === field.uuid) {
-              f.conditions.splice(f.conditions.indexOf(c), 1)
+              f.conditions.splice(f.conditions.indexOf(c), 1);
             }
-          })
-        })
+          });
+        });
 
         this.template.schema.forEach((item) => {
           (item.conditions || []).forEach((c) => {
             if (c.field_uuid === field.uuid) {
-              item.conditions.splice(item.conditions.indexOf(c), 1)
+              item.conditions.splice(item.conditions.indexOf(c), 1);
             }
-          })
-        })
+          });
+        });
       }
 
-      this.save()
+      this.save();
     },
-    pasteField () {
-      const field = this.template.fields.find((f) => f.areas?.includes(this.copiedArea))
-      const currentArea = this.selectedAreaRef?.value || this.copiedArea
+    pasteField() {
+      const field = this.template.fields.find((f) =>
+        f.areas?.includes(this.copiedArea)
+      );
+      const currentArea = this.selectedAreaRef?.value || this.copiedArea;
 
       if (field && currentArea) {
         const area = {
@@ -1224,200 +1365,246 @@ export default {
           attachment_uuid: currentArea.attachment_uuid,
           page: currentArea.page,
           x: currentArea.x,
-          y: currentArea.y + currentArea.h * 1.3
-        }
+          y: currentArea.y + currentArea.h * 1.3,
+        };
 
-        if (['radio', 'multiple'].includes(field.type)) {
-          this.copiedArea.option_uuid ||= field.options[0].uuid
-          area.option_uuid = v4()
+        if (["radio", "multiple"].includes(field.type)) {
+          this.copiedArea.option_uuid ||= field.options[0].uuid;
+          area.option_uuid = v4();
 
-          field.options.push({ uuid: area.option_uuid })
+          field.options.push({ uuid: area.option_uuid });
 
-          field.areas.push(area)
+          field.areas.push(area);
         } else {
           this.template.fields.push({
             ...JSON.parse(JSON.stringify(field)),
             uuid: v4(),
-            areas: [area]
-          })
+            areas: [area],
+          });
         }
 
-        this.selectedAreaRef.value = area
+        this.selectedAreaRef.value = area;
 
-        this.save()
+        this.save();
       }
     },
-    pushUndo () {
-      const stringData = JSON.stringify(this.template)
+    pushUndo() {
+      const stringData = JSON.stringify(this.template);
 
       if (this.undoStack[this.undoStack.length - 1] !== stringData) {
-        this.undoStack.push(stringData)
+        this.undoStack.push(stringData);
 
         if (this.lastRedoData !== stringData) {
-          this.redoStack = []
+          this.redoStack = [];
         }
       }
     },
-    setDefaultAreaSize (area, type) {
-      const documentRef = this.documentRefs.find((e) => e.document.uuid === area.attachment_uuid)
-      const pageMask = documentRef.pageRefs[area.page].$refs.mask
+    setDefaultAreaSize(area, type) {
+      const documentRef = this.documentRefs.find(
+        (e) => e.document.uuid === area.attachment_uuid
+      );
+      const pageMask = documentRef.pageRefs[area.page].$refs.mask;
 
-      if (type === 'checkbox') {
-        area.w = pageMask.clientWidth / 30 / pageMask.clientWidth
-        area.h = (pageMask.clientWidth / 30 / pageMask.clientWidth) * (pageMask.clientWidth / pageMask.clientHeight)
-      } else if (type === 'image') {
-        area.w = pageMask.clientWidth / 5 / pageMask.clientWidth
-        area.h = (pageMask.clientWidth / 5 / pageMask.clientWidth) * (pageMask.clientWidth / pageMask.clientHeight)
-      } else if (type === 'signature' || type === 'stamp' || type === 'verification') {
-        area.w = pageMask.clientWidth / 5 / pageMask.clientWidth
-        area.h = (pageMask.clientWidth / 5 / pageMask.clientWidth) * (pageMask.clientWidth / pageMask.clientHeight) / 2
-      } else if (type === 'initials') {
-        area.w = pageMask.clientWidth / 10 / pageMask.clientWidth
-        area.h = (pageMask.clientWidth / 35 / pageMask.clientWidth)
+      if (type === "checkbox") {
+        area.w = pageMask.clientWidth / 30 / pageMask.clientWidth;
+        area.h =
+          (pageMask.clientWidth / 30 / pageMask.clientWidth) *
+          (pageMask.clientWidth / pageMask.clientHeight);
+      } else if (type === "image") {
+        area.w = pageMask.clientWidth / 5 / pageMask.clientWidth;
+        area.h =
+          (pageMask.clientWidth / 5 / pageMask.clientWidth) *
+          (pageMask.clientWidth / pageMask.clientHeight);
+      } else if (
+        type === "signature" ||
+        type === "stamp" ||
+        type === "verification"
+      ) {
+        area.w = pageMask.clientWidth / 5 / pageMask.clientWidth;
+        area.h =
+          ((pageMask.clientWidth / 5 / pageMask.clientWidth) *
+            (pageMask.clientWidth / pageMask.clientHeight)) /
+          2;
+      } else if (type === "initials") {
+        area.w = pageMask.clientWidth / 10 / pageMask.clientWidth;
+        area.h = pageMask.clientWidth / 35 / pageMask.clientWidth;
       } else {
-        area.w = pageMask.clientWidth / 5 / pageMask.clientWidth
-        area.h = (pageMask.clientWidth / 35 / pageMask.clientWidth)
+        area.w = pageMask.clientWidth / 5 / pageMask.clientWidth;
+        area.h = pageMask.clientWidth / 35 / pageMask.clientWidth;
       }
     },
-    onDraw (area) {
+    onDraw(area) {
       if (this.drawField) {
         if (this.drawOption) {
-          const areaWithoutOption = this.drawField.areas?.find((a) => !a.option_uuid)
+          const areaWithoutOption = this.drawField.areas?.find(
+            (a) => !a.option_uuid
+          );
 
-          if (areaWithoutOption && !this.drawField.areas.find((a) => a.option_uuid === this.drawField.options[0].uuid)) {
-            areaWithoutOption.option_uuid = this.drawField.options[0].uuid
+          if (
+            areaWithoutOption &&
+            !this.drawField.areas.find(
+              (a) => a.option_uuid === this.drawField.options[0].uuid
+            )
+          ) {
+            areaWithoutOption.option_uuid = this.drawField.options[0].uuid;
           }
 
-          area.option_uuid = this.drawOption.uuid
+          area.option_uuid = this.drawOption.uuid;
         }
 
         if (area.w === 0 || area.h === 0) {
-          const previousArea = this.drawField.areas?.[this.drawField.areas.length - 1]
+          const previousArea =
+            this.drawField.areas?.[this.drawField.areas.length - 1];
 
           if (this.selectedField?.type === this.drawField.type) {
-            area.w = this.selectedAreaRef.value.w
-            area.h = this.selectedAreaRef.value.h
+            area.w = this.selectedAreaRef.value.w;
+            area.h = this.selectedAreaRef.value.h;
           } else if (previousArea) {
-            area.w = previousArea.w
-            area.h = previousArea.h
+            area.w = previousArea.w;
+            area.h = previousArea.h;
           } else {
-            this.setDefaultAreaSize(area, this.drawOption ? 'checkbox' : this.drawField?.type)
+            this.setDefaultAreaSize(
+              area,
+              this.drawOption ? "checkbox" : this.drawField?.type
+            );
           }
 
-          area.x -= area.w / 2
-          area.y -= area.h / 2
+          area.x -= area.w / 2;
+          area.y -= area.h / 2;
         }
 
-        this.drawField.areas ||= []
+        this.drawField.areas ||= [];
 
         const insertBeforeAreaIndex = this.drawField.areas.findIndex((a) => {
-          return a.attachment_uuid === area.attachment_uuid && a.page > area.page
-        })
+          return (
+            a.attachment_uuid === area.attachment_uuid && a.page > area.page
+          );
+        });
 
         if (insertBeforeAreaIndex !== -1) {
-          this.drawField.areas.splice(insertBeforeAreaIndex, 0, area)
+          this.drawField.areas.splice(insertBeforeAreaIndex, 0, area);
         } else {
-          this.drawField.areas.push(area)
+          this.drawField.areas.push(area);
         }
 
         if (this.template.fields.indexOf(this.drawField) === -1) {
-          this.template.fields.push(this.drawField)
+          this.template.fields.push(this.drawField);
         }
 
-        this.drawField = null
-        this.drawOption = null
+        this.drawField = null;
+        this.drawOption = null;
 
-        this.selectedAreaRef.value = area
+        this.selectedAreaRef.value = area;
 
-        this.save()
+        this.save();
       } else {
-        const documentRef = this.documentRefs.find((e) => e.document.uuid === area.attachment_uuid)
-        const pageMask = documentRef.pageRefs[area.page].$refs.mask
+        const documentRef = this.documentRefs.find(
+          (e) => e.document.uuid === area.attachment_uuid
+        );
+        const pageMask = documentRef.pageRefs[area.page].$refs.mask;
 
-        let type = (pageMask.clientWidth * area.w) < 35 ? 'checkbox' : 'text'
+        let type = pageMask.clientWidth * area.w < 35 ? "checkbox" : "text";
 
         if (this.drawFieldType) {
-          type = this.drawFieldType
-        } else if (this.defaultDrawFieldType && this.defaultDrawFieldType !== 'text') {
-          type = this.defaultDrawFieldType
-        } else if (this.fieldTypes.length !== 0 && !this.fieldTypes.includes(type)) {
-          type = this.fieldTypes[0]
+          type = this.drawFieldType;
+        } else if (
+          this.defaultDrawFieldType &&
+          this.defaultDrawFieldType !== "text"
+        ) {
+          type = this.defaultDrawFieldType;
+        } else if (
+          this.fieldTypes.length !== 0 &&
+          !this.fieldTypes.includes(type)
+        ) {
+          type = this.fieldTypes[0];
         }
 
-        if (type === 'checkbox' && !this.drawFieldType && (this.template.fields[this.template.fields.length - 1]?.type === 'checkbox' || area.w)) {
-          const previousField = [...this.template.fields].reverse().find((f) => f.type === type)
-          const previousArea = previousField?.areas?.[previousField.areas.length - 1]
+        if (
+          type === "checkbox" &&
+          !this.drawFieldType &&
+          (this.template.fields[this.template.fields.length - 1]?.type ===
+            "checkbox" ||
+            area.w)
+        ) {
+          const previousField = [...this.template.fields]
+            .reverse()
+            .find((f) => f.type === type);
+          const previousArea =
+            previousField?.areas?.[previousField.areas.length - 1];
 
           if (previousArea || area.w) {
-            const areaW = previousArea?.w || (30 / pageMask.clientWidth)
-            const areaH = previousArea?.h || (30 / pageMask.clientHeight)
+            const areaW = previousArea?.w || 30 / pageMask.clientWidth;
+            const areaH = previousArea?.h || 30 / pageMask.clientHeight;
 
-            if ((pageMask.clientWidth * area.w) < 5) {
-              area.x = area.x - (areaW / 2)
-              area.y = area.y - (areaH / 2)
+            if (pageMask.clientWidth * area.w < 5) {
+              area.x = area.x - areaW / 2;
+              area.y = area.y - areaH / 2;
             }
 
-            area.w = areaW
-            area.h = areaH
+            area.w = areaW;
+            area.h = areaH;
           }
         }
 
         if (this.drawFieldType && (area.w === 0 || area.h === 0)) {
           if (this.selectedField?.type === this.drawFieldType) {
-            area.w = this.selectedAreaRef.value.w
-            area.h = this.selectedAreaRef.value.h
+            area.w = this.selectedAreaRef.value.w;
+            area.h = this.selectedAreaRef.value.h;
           } else {
-            this.setDefaultAreaSize(area, this.drawFieldType)
+            this.setDefaultAreaSize(area, this.drawFieldType);
           }
 
-          area.x -= area.w / 2
-          area.y -= area.h / 2
+          area.x -= area.w / 2;
+          area.y -= area.h / 2;
         }
 
         if (area.w) {
-          this.addField(type, area)
+          this.addField(type, area);
 
-          this.selectedAreaRef.value = area
+          this.selectedAreaRef.value = area;
         }
       }
     },
-    onDropfield (area) {
+    onDropfield(area) {
       if (this.$refs.dragPlaceholder) {
-        this.$refs.dragPlaceholder.dragPlaceholder = null
+        this.$refs.dragPlaceholder.dragPlaceholder = null;
       }
 
       if (!this.editable) {
-        return
+        return;
       }
 
       const field = this.fieldsDragFieldRef.value || {
-        name: '',
+        name: "",
         uuid: v4(),
         submitter_uuid: this.selectedSubmitter.uuid,
-        required: this.dragField.type !== 'checkbox',
-        ...this.dragField
-      }
+        required: this.dragField.type !== "checkbox",
+        ...this.dragField,
+      };
 
       if (!field.type) {
-        field.type = 'text'
+        field.type = "text";
       }
 
       if (!this.fieldsDragFieldRef.value) {
-        if (['select', 'multiple', 'radio'].includes(field.type)) {
+        if (["select", "multiple", "radio"].includes(field.type)) {
           if (this.dragField?.options?.length) {
-            field.options = this.dragField.options.map(option => ({ value: option, uuid: v4() }))
+            field.options = this.dragField.options.map((option) => ({
+              value: option,
+              uuid: v4(),
+            }));
           } else {
-            field.options = [{ value: '', uuid: v4() }]
+            field.options = [{ value: "", uuid: v4() }];
           }
         }
 
-        if (['stamp', 'heading'].includes(field.type)) {
-          field.readonly = true
+        if (["stamp", "heading"].includes(field.type)) {
+          field.readonly = true;
         }
 
-        if (field.type === 'date') {
-          field.preferences ||= {}
-          field.preferences.format ||= this.defaultDateFormat
+        if (field.type === "date") {
+          field.preferences ||= {};
+          field.preferences.format ||= this.defaultDateFormat;
         }
       }
 
@@ -1425,411 +1612,478 @@ export default {
         x: (area.x - 6) / area.maskW,
         y: area.y / area.maskH,
         page: area.page,
-        attachment_uuid: area.attachment_uuid
-      }
+        attachment_uuid: area.attachment_uuid,
+      };
 
-      this.assignDropAreaSize(fieldArea, field, area)
+      this.assignDropAreaSize(fieldArea, field, area);
 
       if (field.width) {
-        delete field.width
+        delete field.width;
       }
 
       if (field.height) {
-        delete field.height
+        delete field.height;
       }
 
-      field.areas ||= []
+      field.areas ||= [];
 
-      field.areas.push(fieldArea)
+      field.areas.push(fieldArea);
 
-      this.selectedAreaRef.value = fieldArea
+      this.selectedAreaRef.value = fieldArea;
 
       if (this.template.fields.indexOf(field) === -1) {
-        this.template.fields.push(field)
+        this.template.fields.push(field);
       }
 
-      this.save()
+      this.save();
 
-      document.activeElement?.blur()
+      document.activeElement?.blur();
 
-      if (field.type === 'heading') {
+      if (field.type === "heading") {
         this.$nextTick(() => {
-          const documentRef = this.documentRefs.find((e) => e.document.uuid === area.attachment_uuid)
-          const areaRef = documentRef.pageRefs[area.page].areaRefs.find((ref) => ref.area === this.selectedAreaRef.value)
+          const documentRef = this.documentRefs.find(
+            (e) => e.document.uuid === area.attachment_uuid
+          );
+          const areaRef = documentRef.pageRefs[area.page].areaRefs.find(
+            (ref) => ref.area === this.selectedAreaRef.value
+          );
 
-          areaRef.isHeadingSelected = true
+          areaRef.isHeadingSelected = true;
 
-          areaRef.focusValueInput()
-        })
+          areaRef.focusValueInput();
+        });
       }
     },
-    assignDropAreaSize (fieldArea, field, area) {
-      const fieldType = field.type || 'text'
+    assignDropAreaSize(fieldArea, field, area) {
+      const fieldType = field.type || "text";
 
-      const previousField = [...this.template.fields].reverse().find((f) => f.type === fieldType)
+      const previousField = [...this.template.fields]
+        .reverse()
+        .find((f) => f.type === fieldType);
 
-      let baseArea
+      let baseArea;
 
       if (this.selectedField?.type === fieldType) {
-        baseArea = this.selectedAreaRef.value
+        baseArea = this.selectedAreaRef.value;
       } else if (previousField?.areas?.length) {
-        baseArea = previousField.areas[previousField.areas.length - 1]
+        baseArea = previousField.areas[previousField.areas.length - 1];
       } else {
-        if (['checkbox'].includes(fieldType)) {
+        if (["checkbox"].includes(fieldType)) {
           baseArea = {
             w: area.maskW / 30 / area.maskW,
-            h: area.maskW / 30 / area.maskW * (area.maskW / area.maskH)
-          }
-        } else if (fieldType === 'image') {
+            h: (area.maskW / 30 / area.maskW) * (area.maskW / area.maskH),
+          };
+        } else if (fieldType === "image") {
           baseArea = {
             w: area.maskW / 5 / area.maskW,
-            h: (area.maskW / 5 / area.maskW) * (area.maskW / area.maskH)
-          }
-        } else if (fieldType === 'signature' || fieldType === 'stamp' || fieldType === 'verification') {
+            h: (area.maskW / 5 / area.maskW) * (area.maskW / area.maskH),
+          };
+        } else if (
+          fieldType === "signature" ||
+          fieldType === "stamp" ||
+          fieldType === "verification"
+        ) {
           baseArea = {
             w: area.maskW / 5 / area.maskW,
-            h: (area.maskW / 5 / area.maskW) * (area.maskW / area.maskH) / 2
-          }
-        } else if (fieldType === 'initials') {
+            h: ((area.maskW / 5 / area.maskW) * (area.maskW / area.maskH)) / 2,
+          };
+        } else if (fieldType === "initials") {
           baseArea = {
             w: area.maskW / 10 / area.maskW,
-            h: area.maskW / 35 / area.maskW
-          }
+            h: area.maskW / 35 / area.maskW,
+          };
         } else {
           baseArea = {
             w: area.maskW / 5 / area.maskW,
-            h: area.maskW / 35 / area.maskW
-          }
+            h: area.maskW / 35 / area.maskW,
+          };
         }
       }
 
-      fieldArea.w = baseArea.w
-      fieldArea.h = baseArea.h
+      fieldArea.w = baseArea.w;
+      fieldArea.h = baseArea.h;
 
-      if (fieldType === 'cells') {
-        fieldArea.cell_w = baseArea.cell_w || (baseArea.w / 5)
+      if (fieldType === "cells") {
+        fieldArea.cell_w = baseArea.cell_w || baseArea.w / 5;
       }
 
       if (field.areas?.length) {
-        const lastArea = field.areas[field.areas.length - 1]
+        const lastArea = field.areas[field.areas.length - 1];
 
         if (lastArea) {
-          fieldArea.w = lastArea.w
-          fieldArea.h = lastArea.h
+          fieldArea.w = lastArea.w;
+          fieldArea.h = lastArea.h;
         }
       }
 
       if (field.width) {
-        fieldArea.w = field.width / area.maskW
+        fieldArea.w = field.width / area.maskW;
       }
 
       if (field.height) {
-        fieldArea.h = field.height / area.maskH
+        fieldArea.h = field.height / area.maskH;
       }
 
-      fieldArea.y = fieldArea.y - fieldArea.h / 2
+      fieldArea.y = fieldArea.y - fieldArea.h / 2;
     },
-    addBlankPage () {
-      this.isLoadingBlankPage = true
+    addBlankPage() {
+      this.isLoadingBlankPage = true;
 
-      const canvas = document.createElement('canvas')
+      const canvas = document.createElement("canvas");
 
-      canvas.width = 816
-      canvas.height = 1056
+      canvas.width = 816;
+      canvas.height = 1056;
 
-      const ctx = canvas.getContext('2d')
+      const ctx = canvas.getContext("2d");
 
-      ctx.fillStyle = 'white'
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       canvas.toBlob((blob) => {
-        const file = new File([blob], `Page ${this.template.schema.length + 1}.png`, { type: blob.type, lastModified: Date.now() })
+        const file = new File(
+          [blob],
+          `Page ${this.template.schema.length + 1}.png`,
+          { type: blob.type, lastModified: Date.now() }
+        );
 
-        const formData = new FormData()
-        formData.append('files[]', file)
+        const formData = new FormData();
+        formData.append("files[]", file);
 
         this.baseFetch(`/templates/${this.template.id}/documents`, {
-          method: 'POST',
-          body: formData
-        }).then(async (resp) => {
-          this.updateFromUpload(await resp.json())
-        }).finally(() => {
-          this.isLoadingBlankPage = false
+          method: "POST",
+          body: formData,
         })
-      }, 'image/png')
+          .then(async (resp) => {
+            this.updateFromUpload(await resp.json());
+          })
+          .finally(() => {
+            this.isLoadingBlankPage = false;
+          });
+      }, "image/png");
     },
-    onUploadFailed (error) {
-      if (error) alert(error)
+    onUploadFailed(error) {
+      if (error) alert(error);
     },
-    updateFromUpload (data) {
-      this.template.schema.push(...data.schema)
-      this.template.documents.push(...data.documents)
+    updateFromUpload(data) {
+      this.template.schema.push(...data.schema);
+      this.template.documents.push(...data.documents);
 
       if (data.fields) {
-        this.template.fields = data.fields
+        this.template.fields = data.fields;
       }
 
       if (data.submitters) {
-        this.template.submitters = data.submitters
+        this.template.submitters = data.submitters;
 
-        if (!this.template.submitters.find((s) => s.uuid === this.selectedSubmitter?.uuid)) {
-          this.selectedSubmitter = this.template.submitters[0]
+        if (
+          !this.template.submitters.find(
+            (s) => s.uuid === this.selectedSubmitter?.uuid
+          )
+        ) {
+          this.selectedSubmitter = this.template.submitters[0];
         }
       }
 
       this.$nextTick(() => {
         if (this.$refs.previews) {
-          this.$refs.previews.scrollTop = this.$refs.previews.scrollHeight
+          this.$refs.previews.scrollTop = this.$refs.previews.scrollHeight;
         }
 
-        this.scrollIntoDocument(data.schema[0])
-      })
+        this.scrollIntoDocument(data.schema[0]);
+      });
 
-      if (this.template.name === 'New Document') {
-        this.template.name = this.template.schema[0].name
+      if (this.template.name === "New Document") {
+        this.template.name = this.template.schema[0].name;
       }
 
       if (this.onUpload) {
-        this.onUpload(this.template)
+        this.onUpload(this.template);
       }
 
-      this.save()
+      this.save();
 
       data.documents.forEach((attachment) => {
         if (attachment.metadata?.pdf?.fields?.length) {
-          this.pendingFieldAttachmentUuids.push(attachment.uuid)
+          this.pendingFieldAttachmentUuids.push(attachment.uuid);
 
           attachment.metadata.pdf.fields.forEach((field) => {
-            field.submitter_uuid = this.selectedSubmitter.uuid
+            field.submitter_uuid = this.selectedSubmitter.uuid;
 
-            this.template.fields.push(field)
-          })
+            this.template.fields.push(field);
+          });
         }
-      })
+      });
     },
-    updateName (value) {
-      this.template.name = value
+    updateName(value) {
+      this.template.name = value;
 
-      this.save()
+      this.save();
     },
-    onDocumentRemove (item) {
-      if (window.confirm(this.t('are_you_sure_'))) {
-        this.template.schema.splice(this.template.schema.indexOf(item), 1)
+    onDocumentRemove(item) {
+      if (window.confirm(this.t("are_you_sure_"))) {
+        this.template.schema.splice(this.template.schema.indexOf(item), 1);
 
-        const removedFieldUuids = []
+        const removedFieldUuids = [];
 
         this.template.fields.forEach((field) => {
           [...(field.areas || [])].forEach((area) => {
             if (area.attachment_uuid === item.attachment_uuid) {
-              field.areas.splice(field.areas.indexOf(area), 1)
+              field.areas.splice(field.areas.indexOf(area), 1);
 
-              removedFieldUuids.push(field.uuid)
+              removedFieldUuids.push(field.uuid);
             }
-          })
-        })
+          });
+        });
 
-        this.template.fields =
-          this.template.fields.filter((f) => !removedFieldUuids.includes(f.uuid) || f.areas?.length)
+        this.template.fields = this.template.fields.filter(
+          (f) => !removedFieldUuids.includes(f.uuid) || f.areas?.length
+        );
 
-        this.save()
+        this.save();
       }
     },
-    onDocumentReplace (data) {
-      const { replaceSchemaItem, schema, documents } = data
+    onDocumentReplace(data) {
+      const { replaceSchemaItem, schema, documents } = data;
 
-      this.template.schema.splice(this.template.schema.indexOf(replaceSchemaItem), 1, { ...replaceSchemaItem, ...schema[0] })
-      this.template.documents.push(...documents)
+      this.template.schema.splice(
+        this.template.schema.indexOf(replaceSchemaItem),
+        1,
+        { ...replaceSchemaItem, ...schema[0] }
+      );
+      this.template.documents.push(...documents);
 
       if (data.fields) {
-        this.template.fields = data.fields
+        this.template.fields = data.fields;
 
-        const removedFieldUuids = []
+        const removedFieldUuids = [];
 
         this.template.fields.forEach((field) => {
           [...(field.areas || [])].forEach((area) => {
             if (area.attachment_uuid === replaceSchemaItem.attachment_uuid) {
-              field.areas.splice(field.areas.indexOf(area), 1)
+              field.areas.splice(field.areas.indexOf(area), 1);
 
-              removedFieldUuids.push(field.uuid)
+              removedFieldUuids.push(field.uuid);
             }
-          })
-        })
+          });
+        });
 
-        this.template.fields =
-          this.template.fields.filter((f) => !removedFieldUuids.includes(f.uuid) || f.areas?.length)
+        this.template.fields = this.template.fields.filter(
+          (f) => !removedFieldUuids.includes(f.uuid) || f.areas?.length
+        );
       }
 
       if (data.submitters) {
-        this.template.submitters = data.submitters
+        this.template.submitters = data.submitters;
 
-        if (!this.template.submitters.find((s) => s.uuid === this.selectedSubmitter?.uuid)) {
-          this.selectedSubmitter = this.template.submitters[0]
+        if (
+          !this.template.submitters.find(
+            (s) => s.uuid === this.selectedSubmitter?.uuid
+          )
+        ) {
+          this.selectedSubmitter = this.template.submitters[0];
         }
       }
 
       this.template.fields.forEach((field) => {
         (field.areas || []).forEach((area) => {
           if (area.attachment_uuid === replaceSchemaItem.attachment_uuid) {
-            area.attachment_uuid = schema[0].attachment_uuid
+            area.attachment_uuid = schema[0].attachment_uuid;
           }
-        })
-      })
+        });
+      });
 
       if (this.onUpload) {
-        this.onUpload(this.template)
+        this.onUpload(this.template);
       }
 
-      this.save()
+      this.save();
     },
-    onDocumentsReplace (data) {
+    onDocumentsReplace(data) {
       data.schema.forEach((schemaItem, index) => {
-        const existingSchemaItem = this.template.schema[index]
+        const existingSchemaItem = this.template.schema[index];
 
         if (this.template.schema[index]) {
           this.onDocumentReplace({
             replaceSchemaItem: existingSchemaItem,
             schema: [schemaItem],
-            documents: [data.documents.find((doc) => doc.uuid === schemaItem.attachment_uuid)]
-          })
+            documents: [
+              data.documents.find(
+                (doc) => doc.uuid === schemaItem.attachment_uuid
+              ),
+            ],
+          });
         } else {
           this.updateFromUpload({
             schema: [schemaItem],
-            documents: [data.documents.find((doc) => doc.uuid === schemaItem.attachment_uuid)],
+            documents: [
+              data.documents.find(
+                (doc) => doc.uuid === schemaItem.attachment_uuid
+              ),
+            ],
             fields: data.fields,
-            submitters: data.submitters
-          })
+            submitters: data.submitters,
+          });
         }
-      })
+      });
     },
-    onDocumentsReplaceAndTemplateClone (template) {
-      window.Turbo.visit(`/templates/${template.id}/edit`)
+    onDocumentsReplaceAndTemplateClone(template) {
+      window.Turbo.visit(`/templates/${template.id}/edit`);
     },
-    moveDocument (item, direction) {
-      const currentIndex = this.template.schema.indexOf(item)
+    moveDocument(item, direction) {
+      const currentIndex = this.template.schema.indexOf(item);
 
-      this.template.schema.splice(currentIndex, 1)
+      this.template.schema.splice(currentIndex, 1);
 
       if (currentIndex + direction > this.template.schema.length) {
-        this.template.schema.unshift(item)
+        this.template.schema.unshift(item);
       } else if (currentIndex + direction < 0) {
-        this.template.schema.push(item)
+        this.template.schema.push(item);
       } else {
-        this.template.schema.splice(currentIndex + direction, 0, item)
+        this.template.schema.splice(currentIndex + direction, 0, item);
       }
 
-      this.save()
+      this.save();
     },
-    maybeShowErrorTemplateAlert (e) {
+    maybeShowErrorTemplateAlert(e) {
       if (!this.isAllRequiredFieldsAdded) {
-        e.preventDefault()
+        e.preventDefault();
 
         const fields = this.defaultRequiredFields?.filter((f) => {
-          return !this.template.fields?.some((field) => field.name === f.name)
-        })
+          return !this.template.fields?.some((field) => field.name === f.name);
+        });
 
         if (fields?.length) {
-          return alert(this.t('add_all_required_fields_to_continue') + ': ' + fields.map((f) => f.name).join(', '))
+          return alert(
+            this.t("add_all_required_fields_to_continue") +
+              ": " +
+              fields.map((f) => f.name).join(", ")
+          );
         }
       }
 
       if (!this.template.fields.length) {
-        e.preventDefault()
+        e.preventDefault();
 
-        alert(this.t('please_draw_fields_to_prepare_the_document'))
+        alert(this.t("please_draw_fields_to_prepare_the_document"));
       } else {
-        const submitterWithoutFields =
-          this.template.submitters.find((submitter) => !this.template.fields.some((f) => f.submitter_uuid === submitter.uuid))
+        const submitterWithoutFields = this.template.submitters.find(
+          (submitter) =>
+            !this.template.fields.some(
+              (f) => f.submitter_uuid === submitter.uuid
+            )
+        );
 
         if (submitterWithoutFields) {
-          e.preventDefault()
+          e.preventDefault();
 
-          alert(this.t('please_add_fields_for_the_submitter_name_or_remove_the_submitter_name_if_not_needed').replaceAll('{submitter_name}', submitterWithoutFields.name))
+          alert(
+            this.t(
+              "please_add_fields_for_the_submitter_name_or_remove_the_submitter_name_if_not_needed"
+            ).replaceAll("{submitter_name}", submitterWithoutFields.name)
+          );
         }
       }
     },
-    onSaveClick () {
+    onSaveClick() {
       if (!this.isAllRequiredFieldsAdded) {
         const fields = this.defaultRequiredFields?.filter((f) => {
-          return !this.template.fields?.some((field) => field.name === f.name)
-        })
+          return !this.template.fields?.some((field) => field.name === f.name);
+        });
 
         if (fields?.length) {
-          return alert(this.t('add_all_required_fields_to_continue') + ': ' + fields.map((f) => f.name).join(', '))
+          return alert(
+            this.t("add_all_required_fields_to_continue") +
+              ": " +
+              fields.map((f) => f.name).join(", ")
+          );
         }
       }
 
       if (!this.template.fields.length) {
-        alert(this.t('please_draw_fields_to_prepare_the_document'))
+        alert(this.t("please_draw_fields_to_prepare_the_document"));
       } else {
-        const submitterWithoutFields =
-          this.template.submitters.find((submitter) => !this.template.fields.some((f) => f.submitter_uuid === submitter.uuid))
+        const submitterWithoutFields = this.template.submitters.find(
+          (submitter) =>
+            !this.template.fields.some(
+              (f) => f.submitter_uuid === submitter.uuid
+            )
+        );
 
         if (submitterWithoutFields) {
-          alert(this.t('please_add_fields_for_the_submitter_name_or_remove_the_submitter_name_if_not_needed').replaceAll('{submitter_name}', submitterWithoutFields.name))
+          alert(
+            this.t(
+              "please_add_fields_for_the_submitter_name_or_remove_the_submitter_name_if_not_needed"
+            ).replaceAll("{submitter_name}", submitterWithoutFields.name)
+          );
         } else {
-          this.isSaving = true
+          this.isSaving = true;
 
-          this.save().then(() => {
-            window.Turbo.visit(`/templates/${this.template.id}`)
-          }).finally(() => {
-            this.isSaving = false
-          })
+          this.save()
+            .then(() => {
+              window.Turbo.visit(`/templates/${this.template.id}`);
+            })
+            .finally(() => {
+              this.isSaving = false;
+            });
         }
       }
     },
-    scrollToArea (area) {
-      const documentRef = this.documentRefs.find((a) => a.document.uuid === area.attachment_uuid)
+    scrollToArea(area) {
+      const documentRef = this.documentRefs.find(
+        (a) => a.document.uuid === area.attachment_uuid
+      );
 
-      documentRef.scrollToArea(area)
+      documentRef.scrollToArea(area);
 
-      this.selectedAreaRef.value = area
+      this.selectedAreaRef.value = area;
     },
-    baseFetch (path, options = {}) {
+    baseFetch(path, options = {}) {
       return fetch(this.baseUrl + path, {
         ...options,
         headers: {
-          'X-CSRF-Token': this.authenticityToken,
+          "X-CSRF-Token": this.authenticityToken,
           ...this.fetchOptions.headers,
-          ...options.headers
-        }
-      })
+          ...options.headers,
+        },
+      });
     },
-    save ({ force } = { force: false }) {
-      this.pendingFieldAttachmentUuids = []
+    save({ force } = { force: false }) {
+      this.pendingFieldAttachmentUuids = [];
 
       if (this.onChange) {
-        this.onChange(this.template)
+        this.onChange(this.template);
       }
 
       if (!this.autosave && !force) {
-        return Promise.resolve({})
+        return Promise.resolve({});
       }
 
       this.$nextTick(() => {
-        if (this.$el.closest('template-builder')) {
-          this.$el.closest('template-builder').dataset.template = JSON.stringify(this.template)
+        if (this.$el.closest("template-builder")) {
+          this.$el.closest("template-builder").dataset.template =
+            JSON.stringify(this.template);
         }
-      })
+      });
 
-      this.pushUndo()
+      this.pushUndo();
 
       return this.baseFetch(`/templates/${this.template.id}`, {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify({
           template: {
             name: this.template.name,
             schema: this.template.schema,
             submitters: this.template.submitters,
-            fields: this.template.fields
-          }
+            fields: this.template.fields,
+          },
         }),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { "Content-Type": "application/json" },
       }).then(() => {
         if (this.onSave) {
-          this.onSave(this.template)
+          this.onSave(this.template);
         }
-      })
-    }
-  }
-}
+      });
+    },
+  },
+};
 </script>
