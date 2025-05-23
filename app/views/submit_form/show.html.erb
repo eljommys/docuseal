@@ -1,4 +1,4 @@
-<% content_for(:html_title, "#{@submitter.submission.template.name} | DocuSeal") %>
+<% content_for(:html_title, "#{@submitter.submission.template.name} | Racks") %>
 <% content_for(:html_description, "#{@submitter.account.name} has invited you to fill and sign documents online effortlessly with a secure, fast, and user-friendly digital document signing solution.") %>
 <% fields_index = Templates.build_field_areas_index(@submitter.submission.template_fields || @submitter.submission.template.fields) %>
 <% values = @submitter.submission.submitters.reduce({}) { |acc, sub| acc.merge(sub.values) } %>

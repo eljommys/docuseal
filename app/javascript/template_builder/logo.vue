@@ -12,6 +12,7 @@
       clip-rule: evenodd;
     "
     xmlns:xlink="http://www.w3.org/1999/xlink"
+    viewBox="0 0 511.998 511.998"
   >
     <g>
       <path
