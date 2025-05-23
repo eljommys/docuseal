@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SendWebhookRequest
-  USER_AGENT = 'DocuSeal.com Webhook'
+  USER_AGENT = 'rackslabs.com Webhook'
 
   LOCALHOSTS = %w[0.0.0.0 127.0.0.1 localhost].freeze
 
