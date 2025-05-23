@@ -2,18 +2,17 @@
 
 module Docuseal
   URL_CACHE = ActiveSupport::Cache::MemoryStore.new
-  PRODUCT_URL = 'https://www.docuseal.com'
+  PRODUCT_URL = 'https://www.rackslabs.com'
   PRODUCT_EMAIL_URL = ENV.fetch('PRODUCT_EMAIL_URL', PRODUCT_URL)
-  NEWSLETTER_URL = "#{PRODUCT_URL}/newsletters".freeze
-  ENQUIRIES_URL = "#{PRODUCT_URL}/enquiries".freeze
+  NEWSLETTER_URL = "#{PRODUCT_URL}/solutions".freeze
+  ENQUIRIES_URL = "#{PRODUCT_URL}/contact".freeze
   PRODUCT_NAME = 'Racks'
   DEFAULT_APP_URL = ENV.fetch('APP_URL', 'http://localhost:3000')
-  GITHUB_URL = 'https://github.com/docusealco/docuseal'
-  DISCORD_URL = 'https://discord.gg/qygYCDGck9'
-  TWITTER_URL = 'https://twitter.com/docusealco'
-  TWITTER_HANDLE = '@docusealco'
+  GITHUB_URL = 'https://github.com/Racks-Labs'
+  TWITTER_URL = 'https://x.com/rackslabs'
+  TWITTER_HANDLE = '@rackslabs'
   CHATGPT_URL = "#{PRODUCT_URL}/chat".freeze
-  SUPPORT_EMAIL = 'support@docuseal.com'
+  SUPPORT_EMAIL = 'info@rackslabs.com'
   HOST = ENV.fetch('HOST', 'localhost')
   AATL_CERT_NAME = 'docuseal_aatl'
   CONSOLE_URL = if Rails.env.development?
